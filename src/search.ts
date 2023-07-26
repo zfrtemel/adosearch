@@ -104,7 +104,7 @@ export const search = <
   _model: Model,
   defaultColumns: Columns,
   defaultComputed?: Computed,
-  options?: { columnsCase: 'snake' | 'camel' }
+  options?: { columnsCase: 'snake' | 'camel', searchOperator: 'LIKE' | 'ILIKE' }
 ) =>
   scope(
     (
@@ -132,7 +132,9 @@ export const search = <
             query,
             query.model,
             sections,
-            (subQ) => subQ.orWhere(searchedColumn, 'LIKE', `%${computedSearch}%`),
+            (subQ) => subQ.orWhere(searchedColumn,
+              options.searchOperator === "ILIKE" ? 'ILIKE' : 'LIKE',
+              `%${computedSearch}%`),
             (q) => q.orWhereIn
           )
         }
